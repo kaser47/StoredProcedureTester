@@ -216,6 +216,7 @@ namespace StoredProcedureTester
                             reader["tPatCulIntPatIDPk"], reader["tPatSFirstname"]));// etc
                     }
                 }
+
                 finally
                 {
                     // Always call Close when done reading.
@@ -331,6 +332,11 @@ namespace StoredProcedureTester
         private void BtnGenerateGuid_Click(object sender, EventArgs e)
         {
             tbValue.Text = Guid.NewGuid().ToString();
+        }
+
+        private void TabPage1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 
