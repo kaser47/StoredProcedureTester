@@ -16,7 +16,9 @@ namespace StoredProcedureTester
     public partial class Form1 : Form
     {
         private StoredProcedureTest currentTest;
+        private StringBuilder stringBuilder;
         private LogHelper logHelper;
+        private KonamiSequence sequence = new KonamiSequence();
 
         public Form1()
         {
@@ -34,9 +36,41 @@ namespace StoredProcedureTester
             lbUnoptimisedParameters.MouseDoubleClick += LbUnoptimisedParametersOnMouseDoubleClick;
             lbOptimisedParameters.MouseDoubleClick += LbOptimisedParametersOnMouseDoubleClick;
             cbType.SelectedIndexChanged += CbTypeOnSelectedIndexChanged;
+            this.KeyPreview = true;
+            this.KeyUp += Form1_KeyUp;
             dtpValue.Hide();
             chkBoxValue.Hide();
             btnGenerateGuid.Hide();
+            HideResults();
+        }
+
+        private void HideResults()
+        {
+            foreach (Control tabPage5Control in tabPage5.Controls)
+            {
+                tabPage5Control.Hide();
+            }
+
+            lNoResults.Show();
+
+        }
+
+        private void ShowResults()
+        {
+            foreach (Control tabPage5Control in tabPage5.Controls)
+            {
+                tabPage5Control.Show();
+            }
+            lNoResults.Hide();
+        }
+
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (sequence.IsCompletedBy(e.KeyCode))
+            {
+                EasterEgg easterEgg = new EasterEgg();
+                easterEgg.Show();
+            }
         }
 
         private void CbTypeOnSelectedIndexChanged(object sender, EventArgs e)
@@ -123,8 +157,8 @@ namespace StoredProcedureTester
             currentTest.OptimisedStoredProcedureName = tbOptimisedSPName.Text;
 
             BuildSql();
-            logHelper.Log("Generated SQL - It's been added to your clipboard");
-            // RunSql();
+            logHelper.Log("Generated SQL");
+            RunSql();
         }
 
         private bool isTestValid()
@@ -140,12 +174,11 @@ namespace StoredProcedureTester
 
         private async Task BuildSql()
         {
-            StringBuilder stringBuilder = StoredProcedureTesterConsts.GetTemplate();
+            stringBuilder = StoredProcedureTesterConsts.GetTemplate();
 
             FillVariables(ref stringBuilder);
 
             tbOutput.Text = stringBuilder.ToString();
-            Clipboard.SetText(stringBuilder.ToString());
             await Task.Run(() =>
                 {
                     btnGenerate.BackColor = Color.LightGreen;
@@ -196,10 +229,18 @@ namespace StoredProcedureTester
 
         private void RunSql()
         {
-            string queryString = @"
-
-";
+            string queryString = stringBuilder.ToString();
             string connectionString = "SERVER=(local);DATABASE=VCBedrock;Integrated Security=true";
+
+            foreach (string startupScript in StoredProcedureTesterConsts.StartupScripts)
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand(startupScript, connection);
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                }
+            }
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -211,20 +252,79 @@ namespace StoredProcedureTester
                 {
                     while (reader.Read())
                     {
-                        //TODO: ASHR006 - This needs updating eventually to run the sql thats built.
-                        Console.WriteLine(String.Format("{0}, {1}",
-                            reader["tPatCulIntPatIDPk"], reader["tPatSFirstname"]));// etc
+                        TestSummary testSummary = new TestSummary();
+                        testSummary.FirstTestResult = new TestResult((bool) reader["First Test Result"],
+                            reader["First Test Message"] == DBNull.Value
+                                ? string.Empty
+                                : (string) reader["First Test Message"]);
+                        testSummary.SecondTestResult = new TestResult((bool) reader["Second Test Result"],
+                            reader["Second Test Message"] == DBNull.Value
+                                ? string.Empty
+                                : (string) reader["Second Test Message"]);
+                        testSummary.ThirdTestResult = new TestResult((bool) reader["Third Test Result"],
+                            reader["Third Test Message"] == DBNull.Value
+                                ? string.Empty
+                                : (string) reader["Third Test Message"]);
+                        testSummary.FourthTestResult = new TestResult((bool) reader["Fourth Test Result"],
+                            reader["Fourth Test Message"] == DBNull.Value
+                                ? string.Empty
+                                : (string) reader["Fourth Test Message"]);
+                        testSummary.OverallResult = (bool) reader["Overall Result"];
+                        testSummary.UnoptimisedDateTimeStart = (DateTime) reader["Unoptimised Start"];
+                        testSummary.UnoptimisedDateTimeEnd = (DateTime) reader["Unoptimised End"];
+                        testSummary.OptimisedDateTimeStart = (DateTime) reader["Optimised Start"];
+                        testSummary.OptimisedDateTimeEnd = (DateTime) reader["Optimised End"];
+
+                        //Results
+                        lFirst.Text =
+                            $"1st Test (Same number of rows returned): {testSummary.FirstTestResult.Result.GetResultString()}";
+                        lSecond.Text =
+                            $"2nd Test (Same number of columns returned): {testSummary.SecondTestResult.Result.GetResultString()}";
+                        lThird.Text =
+                            $"3rd Test (Same columns returned): {testSummary.ThirdTestResult.Result.GetResultString()}";
+                        lFourth.Text =
+                            $"4th Test (Same data returned): {testSummary.FourthTestResult.Result.GetResultString()}";
+                        lOverall.Text = $"Overall Result: {testSummary.OverallResult.GetResultString()}";
+
+                        //Message
+                        l1st.Text = $"1st Test: {testSummary.FirstTestResult.Message}";
+                        l2nd.Text = $"2nd Test: {testSummary.SecondTestResult.Message}";
+                        l3rd.Text = $"3rd Test: {testSummary.ThirdTestResult.Message}";
+                        l4th.Text = $"4th Test: {testSummary.FourthTestResult.Message}";
+
+                        //Performance
+                        lUnoptimisedTotalTime.Text =
+                            $"Unoptimised Total Time (ms): {testSummary.UnoptimisedTotalTime.ToString()}";
+                        lOptimisedTotalTime.Text =
+                            $"Optimised Total Time (ms): {testSummary.OptimisedTotalTime.ToString()}";
+                        lDifference.Text = $"Difference (ms):{testSummary.DifferenceTotalTime.ToString()}";
+                        lDifferencePercent.Text = $"Difference (%): {testSummary.DifferencePercentage.ToString()}";
+
+                        lDateTimeRun.Text = $"Date Time Run: {DateTime.Now.ToString("dd/MM/yy hh:mm:ss")}";
+                        Clipboard.SetText(lDateTimeRun.Text);
+
+                        logHelper.Log("Ran SQL");
+                        if (testSummary.OverallResult)
+                        {
+                            logHelper.Log("Test PASSED");
+                            tabPage5.BackColor = Color.LightGreen;
+                        }
+                        else
+                        {
+                            logHelper.Log("Test FAILED");
+                            tabPage5.BackColor = Color.LightCoral;
+                        }
                     }
                 }
-
                 finally
                 {
                     // Always call Close when done reading.
                     reader.Close();
                 }
-            }
 
-            throw new NotImplementedException();
+                ShowResults();
+                tabControl1.SelectedIndex = 1;
+            }
         }
 
         private void BtnAddToUnoptimised_Click(object sender, EventArgs e)
@@ -334,9 +434,14 @@ namespace StoredProcedureTester
             tbValue.Text = Guid.NewGuid().ToString();
         }
 
-        private void TabPage1_Click(object sender, EventArgs e)
+        private void BtnRunAgain_Click(object sender, EventArgs e)
         {
+            RunSql();
+        }
 
+        private void BtnCopyToClipboard_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(tbOutput.Text);
         }
     }
 
@@ -428,5 +533,122 @@ namespace StoredProcedureTester
         Unoptimised = 1,
         Optimised = 2,
     }
+
+    public class TestSummary
+    {
+        public TestResult FirstTestResult { get; set; }
+        public TestResult SecondTestResult { get; set; }
+        public TestResult ThirdTestResult { get; set; }
+        public TestResult FourthTestResult { get; set; }
+        public bool OverallResult { get; set; }
+        public DateTime UnoptimisedDateTimeStart { get; set; }
+        public DateTime UnoptimisedDateTimeEnd { get; set; }
+        public DateTime OptimisedDateTimeStart { get; set; }
+        public DateTime OptimisedDateTimeEnd { get; set; }
+
+        public double UnoptimisedTotalTime {
+            get
+            {
+                TimeSpan span = UnoptimisedDateTimeEnd - UnoptimisedDateTimeStart;
+                return span.Milliseconds;
+            }
+        }
+        public double OptimisedTotalTime
+        {
+            get
+            {
+                TimeSpan span = OptimisedDateTimeEnd - OptimisedDateTimeStart;
+                return span.Milliseconds;
+            }
+        }
+        public double DifferenceTotalTime
+        {
+            get
+            {
+                return UnoptimisedTotalTime - OptimisedTotalTime;
+            }
+        }
+        public double DifferencePercentage
+        {
+            get { return (OptimisedTotalTime / UnoptimisedTotalTime) * 100; }
+        }
+    }
+
+    public class TestResult
+    {
+        public bool Result { get; set; }
+        public string Message { get; set; }
+
+        public TestResult(bool result, string message)
+        {
+            Result = result;
+            Message = message;
+        }
+    }
+
+    public static class ExtensionMethods
+    {
+        public static string GetResultString(this bool boolean)
+        {
+            if (boolean)
+            {
+                return "PASS";
+            }
+            else
+            {
+                return "FAIL";
+            }
+        }
+    }
+
+    public class KonamiSequence
+    {
+
+        List<Keys> Keys = new List<Keys>{System.Windows.Forms.Keys.Up, System.Windows.Forms.Keys.Up,
+            System.Windows.Forms.Keys.Down, System.Windows.Forms.Keys.Down,
+            System.Windows.Forms.Keys.Left, System.Windows.Forms.Keys.Right,
+            System.Windows.Forms.Keys.Left, System.Windows.Forms.Keys.Right,
+            System.Windows.Forms.Keys.B, System.Windows.Forms.Keys.A};
+        private int mPosition = -1;
+
+        public int Position
+        {
+            get { return mPosition; }
+            private set { mPosition = value; }
+        }
+
+        public bool IsCompletedBy(Keys key)
+        {
+
+            if (Keys[Position + 1] == key)
+            {
+                // move to next
+                Position++;
+            }
+            else if (Position == 1 && key == System.Windows.Forms.Keys.Up)
+            {
+                // stay where we are
+            }
+            else if (Keys[0] == key)
+            {
+                // restart at 1st
+                Position = 0;
+            }
+            else
+            {
+                // no match in sequence
+                Position = -1;
+            }
+
+            if (Position == Keys.Count - 1)
+            {
+                Position = -1;
+                return true;
+            }
+
+            return false;
+        }
+    }
 }
+
 

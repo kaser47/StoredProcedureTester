@@ -54,15 +54,37 @@
             this.chkBoxValue = new System.Windows.Forms.CheckBox();
             this.dtpValue = new System.Windows.Forms.DateTimePicker();
             this.lblStatus = new System.Windows.Forms.Label();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.lDateTimeRun = new System.Windows.Forms.Label();
+            this.btnRunAgain = new System.Windows.Forms.Button();
+            this.l4th = new System.Windows.Forms.Label();
+            this.l3rd = new System.Windows.Forms.Label();
+            this.l2nd = new System.Windows.Forms.Label();
+            this.l1st = new System.Windows.Forms.Label();
+            this.lDifferencePercent = new System.Windows.Forms.Label();
+            this.lDifference = new System.Windows.Forms.Label();
+            this.lOptimisedTotalTime = new System.Windows.Forms.Label();
+            this.lUnoptimisedTotalTime = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.lOverall = new System.Windows.Forms.Label();
+            this.lFourth = new System.Windows.Forms.Label();
+            this.lThird = new System.Windows.Forms.Label();
+            this.lSecond = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.lFirst = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.btnCopyToClipboard = new System.Windows.Forms.Button();
             this.tbOutput = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.lbStatus = new System.Windows.Forms.ListBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.label9 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.lNoResults = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage5.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
@@ -242,13 +264,14 @@
             this.btnGenerate.Name = "btnGenerate";
             this.btnGenerate.Size = new System.Drawing.Size(111, 69);
             this.btnGenerate.TabIndex = 18;
-            this.btnGenerate.Text = "Generate";
+            this.btnGenerate.Text = "Run";
             this.btnGenerate.UseVisualStyleBackColor = true;
             this.btnGenerate.Click += new System.EventHandler(this.BtnGenerate_Click);
             // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
@@ -290,7 +313,6 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;
-            this.tabPage1.Click += new System.EventHandler(this.TabPage1_Click);
             // 
             // btnGenerateGuid
             // 
@@ -330,8 +352,206 @@
             this.lblStatus.TabIndex = 19;
             this.lblStatus.Text = "Status:";
             // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.lNoResults);
+            this.tabPage5.Controls.Add(this.lDateTimeRun);
+            this.tabPage5.Controls.Add(this.btnRunAgain);
+            this.tabPage5.Controls.Add(this.l4th);
+            this.tabPage5.Controls.Add(this.l3rd);
+            this.tabPage5.Controls.Add(this.l2nd);
+            this.tabPage5.Controls.Add(this.l1st);
+            this.tabPage5.Controls.Add(this.lDifferencePercent);
+            this.tabPage5.Controls.Add(this.lDifference);
+            this.tabPage5.Controls.Add(this.lOptimisedTotalTime);
+            this.tabPage5.Controls.Add(this.lUnoptimisedTotalTime);
+            this.tabPage5.Controls.Add(this.label11);
+            this.tabPage5.Controls.Add(this.lOverall);
+            this.tabPage5.Controls.Add(this.lFourth);
+            this.tabPage5.Controls.Add(this.lThird);
+            this.tabPage5.Controls.Add(this.lSecond);
+            this.tabPage5.Controls.Add(this.label12);
+            this.tabPage5.Controls.Add(this.lFirst);
+            this.tabPage5.Controls.Add(this.label10);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(700, 330);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "Results";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // lDateTimeRun
+            // 
+            this.lDateTimeRun.AutoSize = true;
+            this.lDateTimeRun.Location = new System.Drawing.Point(381, 187);
+            this.lDateTimeRun.Name = "lDateTimeRun";
+            this.lDateTimeRun.Size = new System.Drawing.Size(176, 13);
+            this.lDateTimeRun.TabIndex = 18;
+            this.lDateTimeRun.Text = "Date Time Run: 03/09/19 03:15:21";
+            // 
+            // btnRunAgain
+            // 
+            this.btnRunAgain.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRunAgain.Location = new System.Drawing.Point(388, 253);
+            this.btnRunAgain.Name = "btnRunAgain";
+            this.btnRunAgain.Size = new System.Drawing.Size(163, 46);
+            this.btnRunAgain.TabIndex = 17;
+            this.btnRunAgain.Text = "Try Again";
+            this.btnRunAgain.UseVisualStyleBackColor = true;
+            this.btnRunAgain.Click += new System.EventHandler(this.BtnRunAgain_Click);
+            // 
+            // l4th
+            // 
+            this.l4th.AutoSize = true;
+            this.l4th.Location = new System.Drawing.Point(323, 95);
+            this.l4th.Name = "l4th";
+            this.l4th.Size = new System.Drawing.Size(46, 13);
+            this.l4th.TabIndex = 16;
+            this.l4th.Text = "4th Test";
+            // 
+            // l3rd
+            // 
+            this.l3rd.AutoSize = true;
+            this.l3rd.Location = new System.Drawing.Point(323, 73);
+            this.l3rd.Name = "l3rd";
+            this.l3rd.Size = new System.Drawing.Size(46, 13);
+            this.l3rd.TabIndex = 15;
+            this.l3rd.Text = "3rd Test";
+            // 
+            // l2nd
+            // 
+            this.l2nd.AutoSize = true;
+            this.l2nd.Location = new System.Drawing.Point(323, 51);
+            this.l2nd.Name = "l2nd";
+            this.l2nd.Size = new System.Drawing.Size(49, 13);
+            this.l2nd.TabIndex = 14;
+            this.l2nd.Text = "2nd Test";
+            // 
+            // l1st
+            // 
+            this.l1st.AutoSize = true;
+            this.l1st.Location = new System.Drawing.Point(323, 29);
+            this.l1st.Name = "l1st";
+            this.l1st.Size = new System.Drawing.Size(45, 13);
+            this.l1st.TabIndex = 13;
+            this.l1st.Text = "1st Test";
+            // 
+            // lDifferencePercent
+            // 
+            this.lDifferencePercent.AutoSize = true;
+            this.lDifferencePercent.Location = new System.Drawing.Point(6, 253);
+            this.lDifferencePercent.Name = "lDifferencePercent";
+            this.lDifferencePercent.Size = new System.Drawing.Size(76, 13);
+            this.lDifferencePercent.TabIndex = 12;
+            this.lDifferencePercent.Text = "Difference (%):";
+            // 
+            // lDifference
+            // 
+            this.lDifference.AutoSize = true;
+            this.lDifference.Location = new System.Drawing.Point(6, 231);
+            this.lDifference.Name = "lDifference";
+            this.lDifference.Size = new System.Drawing.Size(81, 13);
+            this.lDifference.TabIndex = 11;
+            this.lDifference.Text = "Difference (ms):";
+            // 
+            // lOptimisedTotalTime
+            // 
+            this.lOptimisedTotalTime.AutoSize = true;
+            this.lOptimisedTotalTime.Location = new System.Drawing.Point(6, 209);
+            this.lOptimisedTotalTime.Name = "lOptimisedTotalTime";
+            this.lOptimisedTotalTime.Size = new System.Drawing.Size(131, 13);
+            this.lOptimisedTotalTime.TabIndex = 10;
+            this.lOptimisedTotalTime.Text = "Optimised Total Time (ms):";
+            // 
+            // lUnoptimisedTotalTime
+            // 
+            this.lUnoptimisedTotalTime.AutoSize = true;
+            this.lUnoptimisedTotalTime.Location = new System.Drawing.Point(6, 187);
+            this.lUnoptimisedTotalTime.Name = "lUnoptimisedTotalTime";
+            this.lUnoptimisedTotalTime.Size = new System.Drawing.Size(143, 13);
+            this.lUnoptimisedTotalTime.TabIndex = 9;
+            this.lUnoptimisedTotalTime.Text = "Unoptimised Total Time (ms):";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(6, 162);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(78, 13);
+            this.label11.TabIndex = 8;
+            this.label11.Text = "Performance";
+            // 
+            // lOverall
+            // 
+            this.lOverall.AutoSize = true;
+            this.lOverall.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lOverall.Location = new System.Drawing.Point(286, 205);
+            this.lOverall.Name = "lOverall";
+            this.lOverall.Size = new System.Drawing.Size(367, 39);
+            this.lOverall.TabIndex = 7;
+            this.lOverall.Text = "Overall Result: PASS";
+            // 
+            // lFourth
+            // 
+            this.lFourth.AutoSize = true;
+            this.lFourth.Location = new System.Drawing.Point(6, 95);
+            this.lFourth.Name = "lFourth";
+            this.lFourth.Size = new System.Drawing.Size(182, 13);
+            this.lFourth.TabIndex = 6;
+            this.lFourth.Text = "4th Test (Same data returned): PASS";
+            // 
+            // lThird
+            // 
+            this.lThird.AutoSize = true;
+            this.lThird.Location = new System.Drawing.Point(6, 73);
+            this.lThird.Name = "lThird";
+            this.lThird.Size = new System.Drawing.Size(200, 13);
+            this.lThird.TabIndex = 5;
+            this.lThird.Text = "3rd Test (Same columns returned): PASS";
+            // 
+            // lSecond
+            // 
+            this.lSecond.AutoSize = true;
+            this.lSecond.Location = new System.Drawing.Point(6, 51);
+            this.lSecond.Name = "lSecond";
+            this.lSecond.Size = new System.Drawing.Size(253, 13);
+            this.lSecond.TabIndex = 4;
+            this.lSecond.Text = "2nd Test (Same number of columns returned): PASS";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Location = new System.Drawing.Point(323, 7);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(63, 13);
+            this.label12.TabIndex = 3;
+            this.label12.Text = "Messages";
+            // 
+            // lFirst
+            // 
+            this.lFirst.AutoSize = true;
+            this.lFirst.Location = new System.Drawing.Point(6, 29);
+            this.lFirst.Name = "lFirst";
+            this.lFirst.Size = new System.Drawing.Size(232, 13);
+            this.lFirst.TabIndex = 1;
+            this.lFirst.Text = "1st Test (Same number of rows returned): PASS";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(6, 7);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(49, 13);
+            this.label10.TabIndex = 0;
+            this.label10.Text = "Results";
+            // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.btnCopyToClipboard);
             this.tabPage2.Controls.Add(this.tbOutput);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
@@ -341,13 +561,24 @@
             this.tabPage2.Text = "Generated SQL";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // btnCopyToClipboard
+            // 
+            this.btnCopyToClipboard.Location = new System.Drawing.Point(6, 302);
+            this.btnCopyToClipboard.Name = "btnCopyToClipboard";
+            this.btnCopyToClipboard.Size = new System.Drawing.Size(689, 23);
+            this.btnCopyToClipboard.TabIndex = 1;
+            this.btnCopyToClipboard.Text = "Copy to clipboard";
+            this.btnCopyToClipboard.UseVisualStyleBackColor = true;
+            this.btnCopyToClipboard.Click += new System.EventHandler(this.BtnCopyToClipboard_Click);
+            // 
             // tbOutput
             // 
+            this.tbOutput.Enabled = false;
             this.tbOutput.Location = new System.Drawing.Point(6, 6);
             this.tbOutput.Multiline = true;
             this.tbOutput.Name = "tbOutput";
             this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbOutput.Size = new System.Drawing.Size(691, 318);
+            this.tbOutput.Size = new System.Drawing.Size(688, 294);
             this.tbOutput.TabIndex = 0;
             // 
             // tabPage3
@@ -381,6 +612,15 @@
             this.tabPage4.Text = "Read me";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::StoredProcedureTester.Properties.Resources.Readme2;
+            this.pictureBox1.Location = new System.Drawing.Point(3, 3);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(694, 325);
+            this.pictureBox1.TabIndex = 2;
+            this.pictureBox1.TabStop = false;
+            // 
             // label9
             // 
             this.label9.AutoSize = true;
@@ -389,14 +629,15 @@
             this.label9.Size = new System.Drawing.Size(0, 13);
             this.label9.TabIndex = 0;
             // 
-            // pictureBox1
+            // lNoResults
             // 
-            this.pictureBox1.Image = global::StoredProcedureTester.Properties.Resources.Readme;
-            this.pictureBox1.Location = new System.Drawing.Point(3, 3);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(694, 325);
-            this.pictureBox1.TabIndex = 2;
-            this.pictureBox1.TabStop = false;
+            this.lNoResults.AutoSize = true;
+            this.lNoResults.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lNoResults.Location = new System.Drawing.Point(252, 146);
+            this.lNoResults.Name = "lNoResults";
+            this.lNoResults.Size = new System.Drawing.Size(197, 39);
+            this.lNoResults.TabIndex = 19;
+            this.lNoResults.Text = "No Results";
             // 
             // Form1
             // 
@@ -411,6 +652,8 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.tabPage5.ResumeLayout(false);
+            this.tabPage5.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
@@ -455,6 +698,27 @@
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.Label lDifferencePercent;
+        private System.Windows.Forms.Label lDifference;
+        private System.Windows.Forms.Label lOptimisedTotalTime;
+        private System.Windows.Forms.Label lUnoptimisedTotalTime;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label lOverall;
+        private System.Windows.Forms.Label lFourth;
+        private System.Windows.Forms.Label lThird;
+        private System.Windows.Forms.Label lSecond;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label lFirst;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label l4th;
+        private System.Windows.Forms.Label l3rd;
+        private System.Windows.Forms.Label l2nd;
+        private System.Windows.Forms.Label l1st;
+        private System.Windows.Forms.Button btnRunAgain;
+        private System.Windows.Forms.Label lDateTimeRun;
+        private System.Windows.Forms.Button btnCopyToClipboard;
+        private System.Windows.Forms.Label lNoResults;
     }
 }
 

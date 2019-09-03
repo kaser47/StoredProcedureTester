@@ -8,28 +8,35 @@ namespace StoredProcedureTester
 {
     public static class StoredProcedureTesterConsts
     {
+        public static List<string> StartupScripts = new List<string>()
+        {
+            "sp_configure 'Show Advanced Options', 1;",
+            "RECONFIGURE;",
+            "sp_configure 'Ad Hoc Distributed Queries', 1;",
+            "RECONFIGURE;"
+        };
         public static StringBuilder GetTemplate()
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendLine("sp_configure 'Show Advanced Options', 1;");
-            sb.AppendLine("GO");
-            sb.AppendLine("RECONFIGURE;");
-            sb.AppendLine("GO");
-            sb.AppendLine("sp_configure 'Ad Hoc Distributed Queries', 1;");
-            sb.AppendLine("GO");
-            sb.AppendLine("RECONFIGURE;");
-            sb.AppendLine("GO");
             sb.AppendLine("IF OBJECT_ID('tempdb..##UnoptimisedTempTable') IS NOT NULL");
             sb.AppendLine("    DROP TABLE ##UnoptimisedTempTable;");
             sb.AppendLine("IF OBJECT_ID('tempdb..##OptimisedTempTable') IS NOT NULL");
             sb.AppendLine("    DROP TABLE ##OptimisedTempTable;");
-            sb.AppendLine("DECLARE @Fail BIT = 0;");
+            sb.AppendLine("DECLARE @OverallResult BIT = 0;");
             sb.AppendLine("--When comparing two stored procedures you need to make sure you update these two variables--");
 
             sb.AppendLine("DECLARE @BeforeStoredProcedureName NVARCHAR(100) = N'{UnoptimisedStoredProcedureName}';");
             sb.AppendLine("DECLARE @AfterStoredProcedureName NVARCHAR(100) = N'{OptimisedStoredProcedureName}';");
 
+            sb.AppendLine("DECLARE @FirstTestResult BIT = 0;");
+            sb.AppendLine("DECLARE @FirstTestMessage NVARCHAR(100);");
+            sb.AppendLine("DECLARE @SecondTestResult BIT = 0;");
+            sb.AppendLine("DECLARE @SecondTestMessage NVARCHAR(100);");
+            sb.AppendLine("DECLARE @ThirdTestResult BIT = 0;");
+            sb.AppendLine("DECLARE @ThirdTestMessage NVARCHAR(100);");
+            sb.AppendLine("DECLARE @FourthTestResult BIT = 0;");
+            sb.AppendLine("DECLARE @FourthTestMessage NVARCHAR(100);");
             sb.AppendLine("DECLARE @UnoptimisedStart DATETIME;");
             sb.AppendLine("DECLARE @UnoptimisedEnd DATETIME;");
             sb.AppendLine("DECLARE @OptimisedStart DATETIME;");
@@ -39,7 +46,7 @@ namespace StoredProcedureTester
             sb.AppendLine("    = N'SELECT * INTO ##UnoptimisedTempTable FROM OPENROWSET(''SQLNCLI'', ''Server=(local);Trusted_Connection=yes;'',");
             sb.AppendLine("    ''EXEC ' + @BeforeStoredProcedureName");
 
-            sb.AppendLine("{UsingUnoptimisedParameters}");
+            sb.AppendLine("	{UsingUnoptimisedParameters}");
 
             sb.AppendLine("	  + ''')';");
             sb.AppendLine("SET @UnoptimisedStart = GETUTCDATE()");
@@ -51,7 +58,7 @@ namespace StoredProcedureTester
             sb.AppendLine("    ''EXEC ' + @AfterStoredProcedureName");
             sb.AppendLine("      --Parameters for the optimised stored procedure should be added here, I have left some examples commented out to make it easier.");
 
-            sb.AppendLine("{UsingOptimisedParameters}");
+            sb.AppendLine("	  {UsingOptimisedParameters}");
 
             sb.AppendLine("	  + ''')';");
             sb.AppendLine("SET @OptimisedStart = GETUTCDATE()");
@@ -72,8 +79,9 @@ namespace StoredProcedureTester
             sb.AppendLine("--Test both queries return same number of records");
             sb.AppendLine("IF (@UnoptimisedCount = @OptimisedCount)");
             sb.AppendLine("BEGIN");
-            sb.AppendLine("    PRINT ('Both queries returned ' + CAST(@UnoptimisedCount AS NVARCHAR(MAX)) + ' record(s)');");
-            sb.AppendLine("    SELECT @UnoptimisedNumberOfColumns = COUNT(*)");
+            sb.AppendLine("	SET @FirstTestMessage = 'Both queries returned ' + CAST(@UnoptimisedCount AS NVARCHAR(MAX)) + ' record(s)';");
+            sb.AppendLine("    SET @FirstTestResult = 1;");
+            sb.AppendLine("	SELECT @UnoptimisedNumberOfColumns = COUNT(*)");
             sb.AppendLine("    FROM tempdb.sys.columns");
             sb.AppendLine("    WHERE object_id = OBJECT_ID('tempdb..##UnoptimisedTempTable');");
             sb.AppendLine("    SELECT @OptimisedNumberOfColumns = COUNT(*)");
@@ -82,7 +90,8 @@ namespace StoredProcedureTester
             sb.AppendLine("	--Test both queries return same number of columns");
             sb.AppendLine("    IF (@UnoptimisedNumberOfColumns = @OptimisedNumberOfColumns)");
             sb.AppendLine("    BEGIN");
-            sb.AppendLine("        PRINT ('Both queries have ' + CAST(@UnoptimisedCount AS NVARCHAR(MAX)) + ' column(s)');");
+            sb.AppendLine("	SET @SecondTestMessage = 'Both queries have ' + CAST(@UnoptimisedCount AS NVARCHAR(MAX)) + ' column(s)';");
+            sb.AppendLine("	SET @SecondTestResult = 1");
             sb.AppendLine("        SELECT @IdenticalNumberOfColumns = COUNT(*)");
             sb.AppendLine("        FROM");
             sb.AppendLine("        (");
@@ -112,7 +121,8 @@ namespace StoredProcedureTester
             sb.AppendLine("               AND @IdenticalNumberOfColumns = @OptimisedNumberOfColumns");
             sb.AppendLine("           )");
             sb.AppendLine("        BEGIN");
-            sb.AppendLine("            PRINT ('Both queries have the same column(s)');");
+            sb.AppendLine("		SET @ThirdTestMessage = 'Both queries have the same column(s)';");
+            sb.AppendLine("		SET @ThirdTestResult = 1;");
             sb.AppendLine("            SELECT @IdenticalCount = COUNT(*)");
             sb.AppendLine("            FROM");
             sb.AppendLine("            (");
@@ -128,57 +138,55 @@ namespace StoredProcedureTester
             sb.AppendLine("                   AND @IdenticalCount = @OptimisedCount");
             sb.AppendLine("               )");
             sb.AppendLine("            BEGIN");
-            sb.AppendLine("                PRINT ('Both queries return the same record(s)');");
+            sb.AppendLine("               SET @FourthTestMessage ='Both queries return the same record(s)';");
+            sb.AppendLine("			   SET @FourthTestResult = 1;");
+            sb.AppendLine("			   SET @OverallResult = 1;");
             sb.AppendLine("            END;");
             sb.AppendLine("            ELSE");
             sb.AppendLine("            BEGIN");
-            sb.AppendLine("                PRINT ('Queries return different record(s)');");
-            sb.AppendLine("				SET @Fail = 1;");
+            sb.AppendLine("                SET @FourthTestMessage = 'Queries return different record(s)';");
             sb.AppendLine("            END;");
             sb.AppendLine("        END;");
             sb.AppendLine("        ELSE");
             sb.AppendLine("        BEGIN");
-            sb.AppendLine("            PRINT ('The queries return different column(s)');");
-            sb.AppendLine("			SET @Fail = 1;");
+            sb.AppendLine("            SET @ThirdTestMessage = 'The queries return different column(s)';");
             sb.AppendLine("        END;");
             sb.AppendLine("    END;");
             sb.AppendLine("ELSE");
             sb.AppendLine("BEGIN");
-            sb.AppendLine("    PRINT ('Unoptimised returns ' + CAST(@UnoptimisedNumberOfColumns AS NVARCHAR(MAX))");
-            sb.AppendLine("           + ' column(s) BUT optimised returned ' + CAST(@OptimisedNumberOfColumns AS NVARCHAR(MAX)) + ' column(s)'");
-            sb.AppendLine("          );");
-            sb.AppendLine("	SET @Fail = 1;");
+            sb.AppendLine("    SET @SecondTestMessage = 'Unoptimised returns ' + CAST(@UnoptimisedNumberOfColumns AS NVARCHAR(MAX))");
+            sb.AppendLine("           + ' column(s) BUT optimised returned ' + CAST(@OptimisedNumberOfColumns AS NVARCHAR(MAX)) + ' column(s)';");
             sb.AppendLine("END;");
             sb.AppendLine("END;");
             sb.AppendLine("   ELSE");
             sb.AppendLine("    BEGIN");
-            sb.AppendLine("        PRINT ('Unoptimised returned ' + CAST(@UnoptimisedCount AS NVARCHAR(MAX))");
-            sb.AppendLine("               + ' record(s) BUT optimised returned ' + CAST(@OptimisedCount AS NVARCHAR(MAX)) + ' record(s)'");
-            sb.AppendLine("              );");
-            sb.AppendLine("        SET @Fail = 1;");
+            sb.AppendLine("        SET @FirstTestMessage = 'Unoptimised returned ' + CAST(@UnoptimisedCount AS NVARCHAR(MAX))");
+            sb.AppendLine("               + ' record(s) BUT optimised returned ' + CAST(@OptimisedCount AS NVARCHAR(MAX)) + ' record(s)';");
             sb.AppendLine("    END;");
-            sb.AppendLine("	DECLARE @UnoptimsedTotalTime AS FLOAT = CONVERT(FLOAT, DATEDIFF(MILLISECOND,@UnoptimisedStart,@UnoptimisedEnd)) ");
-            sb.AppendLine("	DECLARE @OptimsedTotalTime AS FLOAT = CONVERT(FLOAT, DATEDIFF(MILLISECOND,@OptimisedStart,@OptimisedEnd))");
-            sb.AppendLine("	DECLARE @DifferencePercentage AS FLOAT = (@OptimsedTotalTime / @UnoptimsedTotalTime) * 100");
-            sb.AppendLine("PRINT('Unoptimsed took: ' ");
-            sb.AppendLine("	+ CAST(@UnoptimsedTotalTime AS NVARCHAR(MAX)) ");
-            sb.AppendLine("	+ '(ms) Optimised took: '");
-            sb.AppendLine("	+ CAST(@OptimsedTotalTime AS NVARCHAR(MAX)) ");
-            sb.AppendLine("	+ '(ms) Difference: '+");
-            sb.AppendLine("	+ CAST(@DifferencePercentage AS NVARCHAR(MAX)) ");
-            sb.AppendLine("	+'%')");
-            sb.AppendLine("IF (@Fail = 0)");
-            sb.AppendLine("BEGIN");
-            sb.AppendLine("    PRINT('PASS');");
-            sb.AppendLine("END;");
-            sb.AppendLine("ELSE");
-            sb.AppendLine("BEGIN");
-            sb.AppendLine("    PRINT('FAIL');");
-            sb.AppendLine("END;");
             sb.AppendLine("IF OBJECT_ID('tempdb..##UnoptimisedTempTable') IS NOT NULL");
             sb.AppendLine("    DROP TABLE ##UnoptimisedTempTable;");
             sb.AppendLine("IF OBJECT_ID('tempdb..##OptimisedTempTable') IS NOT NULL");
             sb.AppendLine("    DROP TABLE ##OptimisedTempTable;");
+            sb.AppendLine("SELECT	");
+            sb.AppendLine("		");
+            sb.AppendLine("		@FirstTestResult AS [First Test Result], ");
+            sb.AppendLine("		@FirstTestMessage AS [First Test Message], ");
+            sb.AppendLine("		");
+            sb.AppendLine("		@SecondTestResult AS [Second Test Result], ");
+            sb.AppendLine("		@SecondTestMessage AS [Second Test Message], ");
+            sb.AppendLine("		");
+            sb.AppendLine("		@ThirdTestResult AS [Third Test Result],");
+            sb.AppendLine("		@ThirdTestMessage AS [Third Test Message],");
+            sb.AppendLine("		");
+            sb.AppendLine("		@FourthTestResult AS [Fourth Test Result],");
+            sb.AppendLine("		@FourthTestMessage AS [Fourth Test Message],");
+            sb.AppendLine("		");
+            sb.AppendLine("		@OverallResult AS [Overall Result], ");
+            sb.AppendLine("		@UnoptimisedStart AS [Unoptimised Start], ");
+            sb.AppendLine("		@UnoptimisedEnd AS [Unoptimised End], ");
+            sb.AppendLine("		@OptimisedStart AS [Optimised Start], ");
+            sb.AppendLine("		@OptimisedEnd AS [Optimised End]");
+
 
             return sb;
         }
