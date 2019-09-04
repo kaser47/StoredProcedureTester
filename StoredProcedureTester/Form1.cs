@@ -52,7 +52,6 @@ namespace StoredProcedureTester
             }
 
             lNoResults.Show();
-
         }
 
         private void ShowResults()
@@ -62,6 +61,7 @@ namespace StoredProcedureTester
                 tabPage5Control.Show();
             }
             lNoResults.Hide();
+            lException.Hide();
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
@@ -229,6 +229,8 @@ namespace StoredProcedureTester
 
         private void RunSql()
         {
+            try
+            {
             string queryString = stringBuilder.ToString();
             string connectionString = "SERVER=(local);DATABASE=VCBedrock;Integrated Security=true";
 
@@ -321,10 +323,24 @@ namespace StoredProcedureTester
                     // Always call Close when done reading.
                     reader.Close();
                 }
-
                 ShowResults();
                 tabControl1.SelectedIndex = 1;
             }
+            }
+            catch (Exception ex)
+            {
+                TestFailed(ex.Message);
+            }
+        }
+
+        private void TestFailed(string message)
+        {
+            HideResults();
+            logHelper.Log(message);
+            tabPage5.BackColor = Color.LightCoral;
+            lException.Show();
+            lException.Text = message;
+            tabControl1.SelectedIndex = 1;
         }
 
         private void BtnAddToUnoptimised_Click(object sender, EventArgs e)

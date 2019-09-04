@@ -55,6 +55,8 @@
             this.dtpValue = new System.Windows.Forms.DateTimePicker();
             this.lblStatus = new System.Windows.Forms.Label();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.lException = new System.Windows.Forms.Label();
+            this.lNoResults = new System.Windows.Forms.Label();
             this.lDateTimeRun = new System.Windows.Forms.Label();
             this.btnRunAgain = new System.Windows.Forms.Button();
             this.l4th = new System.Windows.Forms.Label();
@@ -81,7 +83,6 @@
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.lNoResults = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage5.SuspendLayout();
@@ -354,6 +355,8 @@
             // 
             // tabPage5
             // 
+            this.tabPage5.BackColor = System.Drawing.Color.LightCoral;
+            this.tabPage5.Controls.Add(this.lException);
             this.tabPage5.Controls.Add(this.lNoResults);
             this.tabPage5.Controls.Add(this.lDateTimeRun);
             this.tabPage5.Controls.Add(this.btnRunAgain);
@@ -379,7 +382,27 @@
             this.tabPage5.Size = new System.Drawing.Size(700, 330);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Results";
-            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // lException
+            // 
+            this.lException.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lException.Location = new System.Drawing.Point(3, 314);
+            this.lException.Name = "lException";
+            this.lException.Size = new System.Drawing.Size(694, 13);
+            this.lException.TabIndex = 20;
+            this.lException.Text = "Exception:";
+            this.lException.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lException.Visible = false;
+            // 
+            // lNoResults
+            // 
+            this.lNoResults.AutoSize = true;
+            this.lNoResults.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lNoResults.Location = new System.Drawing.Point(252, 146);
+            this.lNoResults.Name = "lNoResults";
+            this.lNoResults.Size = new System.Drawing.Size(197, 39);
+            this.lNoResults.TabIndex = 19;
+            this.lNoResults.Text = "No Results";
             // 
             // lDateTimeRun
             // 
@@ -629,16 +652,6 @@
             this.label9.Size = new System.Drawing.Size(0, 13);
             this.label9.TabIndex = 0;
             // 
-            // lNoResults
-            // 
-            this.lNoResults.AutoSize = true;
-            this.lNoResults.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lNoResults.Location = new System.Drawing.Point(252, 146);
-            this.lNoResults.Name = "lNoResults";
-            this.lNoResults.Size = new System.Drawing.Size(197, 39);
-            this.lNoResults.TabIndex = 19;
-            this.lNoResults.Text = "No Results";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -719,6 +732,7 @@
         private System.Windows.Forms.Label lDateTimeRun;
         private System.Windows.Forms.Button btnCopyToClipboard;
         private System.Windows.Forms.Label lNoResults;
+        private System.Windows.Forms.Label lException;
     }
 }
 
