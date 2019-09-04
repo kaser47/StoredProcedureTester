@@ -50,6 +50,8 @@
             this.btnGenerate = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label13 = new System.Windows.Forms.Label();
+            this.tbDBName = new System.Windows.Forms.TextBox();
             this.btnGenerateGuid = new System.Windows.Forms.Button();
             this.chkBoxValue = new System.Windows.Forms.CheckBox();
             this.dtpValue = new System.Windows.Forms.DateTimePicker();
@@ -96,7 +98,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(26, 16);
+            this.label1.Location = new System.Drawing.Point(26, 40);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(132, 13);
             this.label1.TabIndex = 0;
@@ -104,25 +106,25 @@
             // 
             // tbUnoptimisedSPName
             // 
-            this.tbUnoptimisedSPName.Location = new System.Drawing.Point(25, 32);
+            this.tbUnoptimisedSPName.Location = new System.Drawing.Point(25, 56);
             this.tbUnoptimisedSPName.Name = "tbUnoptimisedSPName";
             this.tbUnoptimisedSPName.Size = new System.Drawing.Size(186, 20);
             this.tbUnoptimisedSPName.TabIndex = 1;
-            this.tbUnoptimisedSPName.Text = "VCBedrock.dbo.Test";
+            this.tbUnoptimisedSPName.Text = "dbo.Test";
             // 
             // tbOptimisedSPName
             // 
-            this.tbOptimisedSPName.Location = new System.Drawing.Point(240, 32);
+            this.tbOptimisedSPName.Location = new System.Drawing.Point(240, 56);
             this.tbOptimisedSPName.Name = "tbOptimisedSPName";
             this.tbOptimisedSPName.Size = new System.Drawing.Size(186, 20);
             this.tbOptimisedSPName.TabIndex = 3;
-            this.tbOptimisedSPName.Text = "VCBedrock.dbo.TestOptimised";
+            this.tbOptimisedSPName.Text = "dbo.TestOptimised";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(241, 16);
+            this.label2.Location = new System.Drawing.Point(241, 40);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(118, 13);
             this.label2.TabIndex = 2;
@@ -133,7 +135,7 @@
             this.lbUnoptimisedParameters.FormattingEnabled = true;
             this.lbUnoptimisedParameters.Location = new System.Drawing.Point(25, 97);
             this.lbUnoptimisedParameters.Name = "lbUnoptimisedParameters";
-            this.lbUnoptimisedParameters.Size = new System.Drawing.Size(186, 212);
+            this.lbUnoptimisedParameters.Size = new System.Drawing.Size(186, 186);
             this.lbUnoptimisedParameters.TabIndex = 4;
             // 
             // label3
@@ -161,7 +163,7 @@
             this.lbOptimisedParameters.FormattingEnabled = true;
             this.lbOptimisedParameters.Location = new System.Drawing.Point(240, 97);
             this.lbOptimisedParameters.Name = "lbOptimisedParameters";
-            this.lbOptimisedParameters.Size = new System.Drawing.Size(186, 212);
+            this.lbOptimisedParameters.Size = new System.Drawing.Size(186, 186);
             this.lbOptimisedParameters.TabIndex = 6;
             // 
             // label5
@@ -263,7 +265,7 @@
             // 
             this.btnGenerate.Location = new System.Drawing.Point(583, 237);
             this.btnGenerate.Name = "btnGenerate";
-            this.btnGenerate.Size = new System.Drawing.Size(111, 69);
+            this.btnGenerate.Size = new System.Drawing.Size(111, 46);
             this.btnGenerate.TabIndex = 18;
             this.btnGenerate.Text = "Run";
             this.btnGenerate.UseVisualStyleBackColor = true;
@@ -279,11 +281,13 @@
             this.tabControl1.Location = new System.Drawing.Point(12, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(708, 356);
+            this.tabControl1.Size = new System.Drawing.Size(708, 353);
             this.tabControl1.TabIndex = 19;
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label13);
+            this.tabPage1.Controls.Add(this.tbDBName);
             this.tabPage1.Controls.Add(this.btnGenerateGuid);
             this.tabPage1.Controls.Add(this.chkBoxValue);
             this.tabPage1.Controls.Add(this.dtpValue);
@@ -310,10 +314,28 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(700, 330);
+            this.tabPage1.Size = new System.Drawing.Size(700, 327);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.Location = new System.Drawing.Point(71, 11);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(60, 13);
+            this.label13.TabIndex = 23;
+            this.label13.Text = "DB Name";
+            // 
+            // tbDBName
+            // 
+            this.tbDBName.Location = new System.Drawing.Point(137, 8);
+            this.tbDBName.Name = "tbDBName";
+            this.tbDBName.Size = new System.Drawing.Size(186, 20);
+            this.tbDBName.TabIndex = 24;
+            this.tbDBName.Text = "VCBedrock";
             // 
             // btnGenerateGuid
             // 
@@ -346,10 +368,11 @@
             // 
             // lblStatus
             // 
-            this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(26, 314);
+            this.lblStatus.BackColor = System.Drawing.Color.Transparent;
+            this.lblStatus.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lblStatus.Location = new System.Drawing.Point(3, 283);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(40, 13);
+            this.lblStatus.Size = new System.Drawing.Size(694, 41);
             this.lblStatus.TabIndex = 19;
             this.lblStatus.Text = "Status:";
             // 
@@ -379,16 +402,16 @@
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(700, 330);
+            this.tabPage5.Size = new System.Drawing.Size(700, 327);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Results";
             // 
             // lException
             // 
             this.lException.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lException.Location = new System.Drawing.Point(3, 314);
+            this.lException.Location = new System.Drawing.Point(3, 206);
             this.lException.Name = "lException";
-            this.lException.Size = new System.Drawing.Size(694, 13);
+            this.lException.Size = new System.Drawing.Size(694, 118);
             this.lException.TabIndex = 20;
             this.lException.Text = "Exception:";
             this.lException.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -579,7 +602,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(700, 330);
+            this.tabPage2.Size = new System.Drawing.Size(700, 327);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Generated SQL";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -596,11 +619,11 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.Enabled = false;
             this.tbOutput.Location = new System.Drawing.Point(6, 6);
             this.tbOutput.Multiline = true;
             this.tbOutput.Name = "tbOutput";
-            this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbOutput.ReadOnly = true;
+            this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.tbOutput.Size = new System.Drawing.Size(688, 294);
             this.tbOutput.TabIndex = 0;
             // 
@@ -610,7 +633,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(700, 330);
+            this.tabPage3.Size = new System.Drawing.Size(700, 327);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Log";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -618,6 +641,7 @@
             // lbStatus
             // 
             this.lbStatus.FormattingEnabled = true;
+            this.lbStatus.HorizontalScrollbar = true;
             this.lbStatus.Location = new System.Drawing.Point(9, 6);
             this.lbStatus.Name = "lbStatus";
             this.lbStatus.Size = new System.Drawing.Size(688, 316);
@@ -658,7 +682,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(723, 354);
             this.Controls.Add(this.tabControl1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "Stored Procedure Tester";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -733,6 +759,8 @@
         private System.Windows.Forms.Button btnCopyToClipboard;
         private System.Windows.Forms.Label lNoResults;
         private System.Windows.Forms.Label lException;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox tbDBName;
     }
 }
 

@@ -146,23 +146,30 @@ namespace StoredProcedureTester
 
         }
 
-        private void BtnGenerate_Click(object sender, EventArgs e)
+        private async void BtnGenerate_Click(object sender, EventArgs e)
         {
             if (!isTestValid())
             {
                 return;
             }
             logHelper.Log("Started generation");
+            currentTest.DatabaseName = tbDBName.Text;
             currentTest.UnoptimisedStoredProcedureName = tbUnoptimisedSPName.Text;
             currentTest.OptimisedStoredProcedureName = tbOptimisedSPName.Text;
 
             BuildSql();
             logHelper.Log("Generated SQL");
-            RunSql();
+            await RunSqlAsync();
         }
 
         private bool isTestValid()
         {
+            if (string.IsNullOrWhiteSpace(tbDBName.Text))
+            {
+                IsNotValid("Database Name");
+                return false;
+            }
+
             if (string.IsNullOrWhiteSpace(tbOptimisedSPName.Text) || string.IsNullOrWhiteSpace(tbOptimisedSPName.Text))
             {
                 IsNotValid("Stored Procedure Name");
@@ -172,25 +179,19 @@ namespace StoredProcedureTester
             return true;
         }
 
-        private async Task BuildSql()
+        private void BuildSql()
         {
             stringBuilder = StoredProcedureTesterConsts.GetTemplate();
 
             FillVariables(ref stringBuilder);
 
             tbOutput.Text = stringBuilder.ToString();
-            await Task.Run(() =>
-                {
-                    btnGenerate.BackColor = Color.LightGreen;
-                    Thread.Sleep(2000);
-                    btnGenerate.BackColor = DefaultBackColor;
-                });
         }
 
         private void FillVariables(ref StringBuilder stringBuilder)
         {
-            stringBuilder.Replace("{UnoptimisedStoredProcedureName}", currentTest.UnoptimisedStoredProcedureName);
-            stringBuilder.Replace("{OptimisedStoredProcedureName}", currentTest.OptimisedStoredProcedureName);
+            stringBuilder.Replace("{UnoptimisedStoredProcedureName}", $"{currentTest.DatabaseName}.{currentTest.UnoptimisedStoredProcedureName}");
+            stringBuilder.Replace("{OptimisedStoredProcedureName}", $"{currentTest.DatabaseName}.{currentTest.OptimisedStoredProcedureName}");
 
             StringBuilder unOptimisedParameters = new StringBuilder();
             for (int i = 0; i < currentTest.UnoptimisedStoredProcedureParameters.Count; i++)
@@ -227,32 +228,32 @@ namespace StoredProcedureTester
 
         }
 
-        private void RunSql()
+        private async Task RunSqlAsync()
         {
             try
             {
             string queryString = stringBuilder.ToString();
-            string connectionString = "SERVER=(local);DATABASE=VCBedrock;Integrated Security=true";
+            string connectionString = $"SERVER=(local);DATABASE={currentTest.DatabaseName};Integrated Security=true";
 
             foreach (string startupScript in StoredProcedureTesterConsts.StartupScripts)
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     SqlCommand command = new SqlCommand(startupScript, connection);
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
+                    await connection.OpenAsync();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
                 }
             }
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 SqlCommand command = new SqlCommand(queryString, connection);
-                //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
-                connection.Open();
+                    //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
+                await connection.OpenAsync();
                 SqlDataReader reader = command.ExecuteReader();
                 try
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         TestSummary testSummary = new TestSummary();
                         testSummary.FirstTestResult = new TestResult((bool) reader["First Test Result"],
@@ -452,7 +453,7 @@ namespace StoredProcedureTester
 
         private void BtnRunAgain_Click(object sender, EventArgs e)
         {
-            RunSql();
+            RunSqlAsync();
         }
 
         private void BtnCopyToClipboard_Click(object sender, EventArgs e)
@@ -463,6 +464,7 @@ namespace StoredProcedureTester
 
     public class StoredProcedureTest
     {
+        public string DatabaseName { get; set; }
         public string UnoptimisedStoredProcedureName { get; set; }
         public string OptimisedStoredProcedureName { get; set; }
         public BindingList<TestParameter> UnoptimisedStoredProcedureParameters { get; set; }
