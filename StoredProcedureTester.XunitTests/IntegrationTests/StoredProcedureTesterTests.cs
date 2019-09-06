@@ -16,6 +16,7 @@ namespace StoredProcedureTester.Tests.IntegrationTests
     public class StoredProcedureTesterTests
     {
         [Fact]
+        [Trait("Integration", "Test Results")]
         public async Task TestTwoStoredProceduresThatReturnTheSameData()
         {
             StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
@@ -38,6 +39,7 @@ namespace StoredProcedureTester.Tests.IntegrationTests
         }
 
         [Fact]
+        [Trait("Integration", "Test Results")]
         public async Task TestTwoStoredProceduresThatReturnDifferentNumberOfRows()
         {
             StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
@@ -60,6 +62,7 @@ namespace StoredProcedureTester.Tests.IntegrationTests
         }
 
         [Fact]
+        [Trait("Integration", "Test Results")]
         public async Task TestTwoStoredProceduresThatReturnDifferentNumberOfColumns()
         {
             StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
@@ -82,6 +85,7 @@ namespace StoredProcedureTester.Tests.IntegrationTests
         }
 
         [Fact]
+        [Trait("Integration", "Test Results")]
         public async Task TestTwoStoredProceduresThatReturnDifferentColumn()
         {
             StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
@@ -104,6 +108,7 @@ namespace StoredProcedureTester.Tests.IntegrationTests
         }
 
         [Fact]
+        [Trait("Integration", "Test Results")]
         public async Task TestTwoStoredProceduresThatReturnDifferentData()
         {
             StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
@@ -126,6 +131,7 @@ namespace StoredProcedureTester.Tests.IntegrationTests
         }
 
         [Fact]
+        [Trait("Integration", "Test Parameters")]
         public async Task TestTwoDuplicateStoredProceduresThatUseIntParameter()
         {
             StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
@@ -150,6 +156,7 @@ namespace StoredProcedureTester.Tests.IntegrationTests
         }
 
         [Fact]
+        [Trait("Integration", "Test Parameters")]
         public async Task TestTwoDuplicateStoredProceduresThatUseStringParameter()
         {
             StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
@@ -174,6 +181,7 @@ namespace StoredProcedureTester.Tests.IntegrationTests
         }
 
         [Fact]
+        [Trait("Integration", "Test Parameters")]
         public async Task TestTwoDuplicateStoredProceduresThatUseGuidParameter()
         {
             StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
@@ -198,6 +206,7 @@ namespace StoredProcedureTester.Tests.IntegrationTests
         }
 
         [Fact]
+        [Trait("Integration", "Test Parameters")]
         public async Task TestTwoDuplicateStoredProceduresThatUseDateTimeParameter()
         {
             StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
@@ -222,6 +231,7 @@ namespace StoredProcedureTester.Tests.IntegrationTests
         }
 
         [Fact]
+        [Trait("Integration", "Test Parameters")]
         public async Task TestTwoDuplicateStoredProceduresThatUseBoolParameter()
         {
             StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
@@ -246,6 +256,7 @@ namespace StoredProcedureTester.Tests.IntegrationTests
         }
 
         [Fact]
+        [Trait("Integration", "Test Parameters")]
         public async Task TestTwoDuplicateStoredProceduresThatUseCustomParameter()
         {
             StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
