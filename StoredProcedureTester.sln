@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29209.62
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoredProcedureTester", "StoredProcedureTester\StoredProcedureTester.csproj", "{4EFAF74E-0A58-4692-8A50-57E1214709E9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoredProcedureTester.Tests", "StoredProcedureTester.XunitTests\StoredProcedureTester.Tests.csproj", "{F899AA6F-409B-460B-9CE5-1F4925889296}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{4EFAF74E-0A58-4692-8A50-57E1214709E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EFAF74E-0A58-4692-8A50-57E1214709E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EFAF74E-0A58-4692-8A50-57E1214709E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F899AA6F-409B-460B-9CE5-1F4925889296}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F899AA6F-409B-460B-9CE5-1F4925889296}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F899AA6F-409B-460B-9CE5-1F4925889296}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F899AA6F-409B-460B-9CE5-1F4925889296}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

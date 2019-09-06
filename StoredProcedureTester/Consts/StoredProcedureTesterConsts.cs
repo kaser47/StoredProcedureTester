@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace StoredProcedureTester
+namespace StoredProcedureTester.Consts
 {
     public static class StoredProcedureTesterConsts
     {
@@ -15,6 +12,11 @@ namespace StoredProcedureTester
             "sp_configure 'Ad Hoc Distributed Queries', 1;",
             "RECONFIGURE;"
         };
+
+        public static string FilePath = @"C:/Temp/StoredProcedureTester/";
+        public static string Filename = @"results.csv";
+
+
         public static StringBuilder GetTemplate()
         {
             StringBuilder sb = new StringBuilder();

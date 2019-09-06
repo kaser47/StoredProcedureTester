@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using StoredProcedureTester.Interfaces;
 
-namespace StoredProcedureTester
+namespace StoredProcedureTester.Helpers
 {
-    class LogHelper
+    class LogHelper : ILogHelper
     {
         public BindingList<KeyValuePair<DateTime, string>> logs { get; }
 
@@ -19,6 +17,11 @@ namespace StoredProcedureTester
         public void Log(string message)
         {
             logs.Add(new KeyValuePair<DateTime, string>(DateTime.UtcNow, message));
+        }
+
+        public BindingList<KeyValuePair<DateTime, string>> GetLogs()
+        {
+            return logs;
         }
     }
 }
