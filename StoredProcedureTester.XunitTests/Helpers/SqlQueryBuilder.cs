@@ -9,6 +9,16 @@ namespace StoredProcedureTester.Tests.Helpers
 {
     public class SqlQueryBuilder : ISqlQueryBuilder
     {
+        public string BuildCreateSchemaQuery()
+        {
+            return StoredProcedureTesterTestsConsts.CreateSchema().ToString();
+        }
+
+        public string BuildDropSchemaQuery()
+        {
+            return StoredProcedureTesterTestsConsts.DropSchema().ToString();
+        }
+
         public string BuildDropStoredProcedureQuery(string storedProcedureName)
         {
             StringBuilder sqlQueryBuilder = StoredProcedureTesterTestsConsts.DropStoredProcedure();
@@ -36,12 +46,23 @@ namespace StoredProcedureTester.Tests.Helpers
             return sqlSelectQueryBuilder.ToString();
         }
 
+        public string BuildComplexSelectQuery(StringBuilder query)
+        {
+            StringBuilder sqlComplexSelectQueryBuilder = StoredProcedureTesterTestsConsts.ComplexSelectQuery();
+            sqlComplexSelectQueryBuilder.Replace("{query}", query.ToString());
+
+            return sqlComplexSelectQueryBuilder.ToString();
+        }
     }
 
     public interface ISqlQueryBuilder
     {
+        string BuildCreateSchemaQuery();
+        string BuildDropSchemaQuery();
         string BuildDropStoredProcedureQuery(string storedProcedureName);
         string BuildCreateStoredProcedureQuery(string storedProcedureName, string parameters, string query);
         string BuildSelectQuery(string value, string column);
+        string BuildComplexSelectQuery(StringBuilder query);
+
     }
 }
