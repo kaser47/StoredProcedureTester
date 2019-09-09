@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
 using Shouldly;
-using StoredProcedureTester.Interfaces;
 using StoredProcedureTester.Models;
 using StoredProcedureTester.Runners;
+using StoredProcedureTester.Tests.Enumns;
 using StoredProcedureTester.Tests.Factories;
 using StoredProcedureTester.Tests.Helpers;
 using Xunit;
@@ -15,282 +13,279 @@ namespace StoredProcedureTester.Tests.IntegrationTests
 {
     public class StoredProcedureTesterTests
     {
+        private static async Task Cleanup()
+        {
+            StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
+            await storedProcedureHelper.DropStoredProceduresAsync();
+        }
+
+        private static async Task<TestSummary> RunStoredProcedureTester(StoredProcedureTest storedProcedureTest = null)
+        {
+            if (storedProcedureTest == null)
+            {
+                storedProcedureTest = StoredProcedureTestFactory.DefaultTest();
+            }
+
+            SqlTestRunner sqlTestRunner = new SqlTestRunner(new NullLogHelper());
+            TestSummary testSummary = await sqlTestRunner.Run(storedProcedureTest);
+            return testSummary;
+        }
+
+        private static StoredProcedureHelper CreateStoredProcedureHelper()
+        {
+            StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
+            return storedProcedureHelper;
+        }
+
+        private bool CheckResult(TestSummary testSummary, ResultEnum resultEnum)
+        {
+            bool testResult = false;
+            bool firstTest = resultEnum.HasFlag(ResultEnum.FirstTest);
+            bool secondTest = resultEnum.HasFlag(ResultEnum.SecondTest);
+            bool thirdTest = resultEnum.HasFlag(ResultEnum.ThirdTest);
+            bool fourthTest = resultEnum.HasFlag(ResultEnum.FourthTest);
+            bool overallTest = resultEnum.HasFlag(ResultEnum.OverallTest);
+
+            if (testSummary.FirstTestResult.Result == firstTest &&
+                testSummary.SecondTestResult.Result == secondTest &&
+                testSummary.ThirdTestResult.Result == thirdTest &&
+                testSummary.FourthTestResult.Result == fourthTest &&
+                testSummary.OverallResult == overallTest)
+            {
+                testResult = true;
+            }
+
+            return testResult;
+        }
+
         [Fact]
         [Trait("Integration", "Test Results")]
         public async Task TestTwoStoredProceduresThatReturnTheSameData()
         {
-            StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
+            try
+            {
+                //Arrange
+                var storedProcedureHelper = CreateStoredProcedureHelper();
+                await storedProcedureHelper.CreateDuplicateStoredProceduresAsync();
 
-            await storedProcedureHelper.CreateDuplicateStoredProceduresAsync();
+                //Act
+                var testSummary = await RunStoredProcedureTester();
 
-            SqlTestRunner sqlTestRunner = new SqlTestRunner(new NullLogHelper());
-            StoredProcedureTest storedProcedureTest = StoredProcedureTestFactory.DefaultTest();
-            TestSummary testSummary = await sqlTestRunner.Run(storedProcedureTest);
-
-            //Check test data is passed
-            testSummary.FirstTestResult.Result.ShouldBeTrue();
-            testSummary.SecondTestResult.Result.ShouldBeTrue();
-            testSummary.ThirdTestResult.Result.ShouldBeTrue();
-            testSummary.FourthTestResult.Result.ShouldBeTrue();
-            testSummary.OverallResult.ShouldBeTrue();
-
-            //Drop stored procedures
-            await storedProcedureHelper.DropStoredProceduresAsync();
+                //Assert
+                CheckResult(testSummary, ResultEnum.AllPass).ShouldBeTrue();
+            }
+            finally
+            {
+                await Cleanup();
+            }
         }
 
         [Fact]
         [Trait("Integration", "Test Results")]
         public async Task TestTwoStoredProceduresThatReturnDifferentNumberOfRows()
         {
-            StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
+            try
+            {
+                var storedProcedureHelper = CreateStoredProcedureHelper();
+                await storedProcedureHelper.CreateTwoStoredProceduresOneReturnsMoreRowsAsync();
 
-            await storedProcedureHelper.CreateTwoStoredProceduresOneReturnsMoreRowsAsync();
+                var testSummary = await RunStoredProcedureTester();
 
-            SqlTestRunner sqlTestRunner = new SqlTestRunner(new NullLogHelper());
-            StoredProcedureTest storedProcedureTest = StoredProcedureTestFactory.DefaultTest();
-            TestSummary testSummary = await sqlTestRunner.Run(storedProcedureTest);
-
-            //Check test data is passed
-            testSummary.FirstTestResult.Result.ShouldBeFalse();
-            testSummary.SecondTestResult.Result.ShouldBeFalse();
-            testSummary.ThirdTestResult.Result.ShouldBeFalse();
-            testSummary.FourthTestResult.Result.ShouldBeFalse();
-            testSummary.OverallResult.ShouldBeFalse();
-
-            //Drop stored procedures
-            await storedProcedureHelper.DropStoredProceduresAsync();
+                CheckResult(testSummary, ResultEnum.AllFail).ShouldBeTrue();
+            }
+            finally
+            {
+                await Cleanup();
+            } 
         }
 
         [Fact]
         [Trait("Integration", "Test Results")]
         public async Task TestTwoStoredProceduresThatReturnDifferentNumberOfColumns()
         {
-            StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
+            try
+            {
+                var storedProcedureHelper = CreateStoredProcedureHelper();
+                await storedProcedureHelper.CreateTwoStoredProceduresOneReturnsMoreColumnsAsync();
 
-            await storedProcedureHelper.CreateTwoStoredProceduresOneReturnsMoreColumnsAsync();
+                var testSummary = await RunStoredProcedureTester();
 
-            SqlTestRunner sqlTestRunner = new SqlTestRunner(new NullLogHelper());
-            StoredProcedureTest storedProcedureTest = StoredProcedureTestFactory.DefaultTest();
-            TestSummary testSummary = await sqlTestRunner.Run(storedProcedureTest);
-
-            //Check test data is passed
-            testSummary.FirstTestResult.Result.ShouldBeTrue();
-            testSummary.SecondTestResult.Result.ShouldBeFalse();
-            testSummary.ThirdTestResult.Result.ShouldBeFalse();
-            testSummary.FourthTestResult.Result.ShouldBeFalse();
-            testSummary.OverallResult.ShouldBeFalse();
-
-            //Drop stored procedures
-            await storedProcedureHelper.DropStoredProceduresAsync();
+                CheckResult(testSummary, ResultEnum.FirstTest).ShouldBeTrue();
+            }
+            finally
+            {
+                await Cleanup();
+            }
         }
 
         [Fact]
         [Trait("Integration", "Test Results")]
         public async Task TestTwoStoredProceduresThatReturnDifferentColumn()
         {
-            StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
+            try
+            {
+                var storedProcedureHelper = CreateStoredProcedureHelper();
+                await storedProcedureHelper.CreateTwoStoredProceduresOneReturnsDifferentColumnAsync();
 
-            await storedProcedureHelper.CreateTwoStoredProceduresOneReturnsDifferentColumnAsync();
+                var testSummary = await RunStoredProcedureTester();
 
-            SqlTestRunner sqlTestRunner = new SqlTestRunner(new NullLogHelper());
-            StoredProcedureTest storedProcedureTest = StoredProcedureTestFactory.DefaultTest();
-            TestSummary testSummary = await sqlTestRunner.Run(storedProcedureTest);
-
-            //Check test data is passed
-            testSummary.FirstTestResult.Result.ShouldBeTrue();
-            testSummary.SecondTestResult.Result.ShouldBeTrue();
-            testSummary.ThirdTestResult.Result.ShouldBeFalse();
-            testSummary.FourthTestResult.Result.ShouldBeFalse();
-            testSummary.OverallResult.ShouldBeFalse();
-
-            //Drop stored procedures
-            await storedProcedureHelper.DropStoredProceduresAsync();
+                CheckResult(testSummary, ResultEnum.FirstTest | ResultEnum.SecondTest).ShouldBeTrue();
+            }
+            finally
+            {
+                await Cleanup();
+            }
         }
 
         [Fact]
         [Trait("Integration", "Test Results")]
         public async Task TestTwoStoredProceduresThatReturnDifferentData()
         {
-            StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
+            try
+            {
+                var storedProcedureHelper = CreateStoredProcedureHelper();
+                await storedProcedureHelper.CreateTwoStoredProceduresOneReturnsDifferentDataAsync();
 
-            await storedProcedureHelper.CreateTwoStoredProceduresOneReturnsDifferentDataAsync();
+                var testSummary = await RunStoredProcedureTester();
 
-            SqlTestRunner sqlTestRunner = new SqlTestRunner(new NullLogHelper());
-            StoredProcedureTest storedProcedureTest = StoredProcedureTestFactory.DefaultTest();
-            TestSummary testSummary = await sqlTestRunner.Run(storedProcedureTest);
-
-            //Check test data is passed
-            testSummary.FirstTestResult.Result.ShouldBeTrue();
-            testSummary.SecondTestResult.Result.ShouldBeTrue();
-            testSummary.ThirdTestResult.Result.ShouldBeTrue();
-            testSummary.FourthTestResult.Result.ShouldBeFalse();
-            testSummary.OverallResult.ShouldBeFalse();
-
-            //Drop stored procedures
-            await storedProcedureHelper.DropStoredProceduresAsync();
+                CheckResult(testSummary, ResultEnum.FirstTest | ResultEnum.SecondTest | ResultEnum.ThirdTest).ShouldBeTrue();
+            }
+            finally
+            {
+                await Cleanup();
+            }
         }
 
         [Fact]
         [Trait("Integration", "Test Parameters")]
         public async Task TestTwoDuplicateStoredProceduresThatUseIntParameter()
         {
-            StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
+            try
+            {
+                var storedProcedureHelper = CreateStoredProcedureHelper();
+                await storedProcedureHelper.CreateDuplicateStoredProceduresThatUseIntParameterAsync();
 
-            await storedProcedureHelper.CreateDuplicateStoredProceduresThatUseIntParameterAsync();
+                StoredProcedureTest storedProcedureTest = StoredProcedureTestFactory.DefaultTest()
+                    .AddIntParameterToBoth("TestInt", 1);
 
-            SqlTestRunner sqlTestRunner = new SqlTestRunner(new NullLogHelper());
-            StoredProcedureTest storedProcedureTest = StoredProcedureTestFactory.DefaultTest()
-                .AddIntParameterToBoth("TestInt", 1);
+                var testSummary = await RunStoredProcedureTester(storedProcedureTest);
 
-            TestSummary testSummary = await sqlTestRunner.Run(storedProcedureTest);
-
-            //Check test data is passed
-            testSummary.FirstTestResult.Result.ShouldBeTrue();
-            testSummary.SecondTestResult.Result.ShouldBeTrue();
-            testSummary.ThirdTestResult.Result.ShouldBeTrue();
-            testSummary.FourthTestResult.Result.ShouldBeTrue();
-            testSummary.OverallResult.ShouldBeTrue();
-
-            //Drop stored procedures
-            await storedProcedureHelper.DropStoredProceduresAsync();
+                CheckResult(testSummary, ResultEnum.AllPass).ShouldBeTrue();
+            }
+            finally
+            {
+                await Cleanup();
+            }
         }
 
         [Fact]
         [Trait("Integration", "Test Parameters")]
         public async Task TestTwoDuplicateStoredProceduresThatUseStringParameter()
         {
-            StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
+            try
+            {
+                var storedProcedureHelper = CreateStoredProcedureHelper();
+                await storedProcedureHelper.CreateDuplicateStoredProceduresThatUseStringParameterAsync();
 
-            await storedProcedureHelper.CreateDuplicateStoredProceduresThatUseStringParameterAsync();
+                StoredProcedureTest storedProcedureTest = StoredProcedureTestFactory.DefaultTest()
+                    .AddStringParameterToBoth("TestString", "Test");
 
-            SqlTestRunner sqlTestRunner = new SqlTestRunner(new NullLogHelper());
-            StoredProcedureTest storedProcedureTest = StoredProcedureTestFactory.DefaultTest()
-                .AddStringParameterToBoth("TestString", "Test");
+                var testSummary = await RunStoredProcedureTester(storedProcedureTest);
 
-            TestSummary testSummary = await sqlTestRunner.Run(storedProcedureTest);
-
-            //Check test data is passed
-            testSummary.FirstTestResult.Result.ShouldBeTrue();
-            testSummary.SecondTestResult.Result.ShouldBeTrue();
-            testSummary.ThirdTestResult.Result.ShouldBeTrue();
-            testSummary.FourthTestResult.Result.ShouldBeTrue();
-            testSummary.OverallResult.ShouldBeTrue();
-
-            //Drop stored procedures
-            await storedProcedureHelper.DropStoredProceduresAsync();
+                CheckResult(testSummary, ResultEnum.AllPass).ShouldBeTrue();
+            }
+            finally
+            {
+                await Cleanup();
+            }
         }
 
         [Fact]
         [Trait("Integration", "Test Parameters")]
         public async Task TestTwoDuplicateStoredProceduresThatUseGuidParameter()
         {
-            StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
+            try
+            {
+                var storedProcedureHelper = CreateStoredProcedureHelper();
+                await storedProcedureHelper.CreateDuplicateStoredProceduresThatUseGuidParameterAsync();
 
-            await storedProcedureHelper.CreateDuplicateStoredProceduresThatUseGuidParameterAsync();
+                StoredProcedureTest storedProcedureTest = StoredProcedureTestFactory.DefaultTest()
+                    .AddGuidParameterToBoth("TestGuid", Guid.NewGuid());
 
-            SqlTestRunner sqlTestRunner = new SqlTestRunner(new NullLogHelper());
-            StoredProcedureTest storedProcedureTest = StoredProcedureTestFactory.DefaultTest()
-                .AddGuidParameterToBoth("TestGuid", Guid.NewGuid());
+                var testSummary = await RunStoredProcedureTester(storedProcedureTest);
 
-            TestSummary testSummary = await sqlTestRunner.Run(storedProcedureTest);
-
-            //Check test data is passed
-            testSummary.FirstTestResult.Result.ShouldBeTrue();
-            testSummary.SecondTestResult.Result.ShouldBeTrue();
-            testSummary.ThirdTestResult.Result.ShouldBeTrue();
-            testSummary.FourthTestResult.Result.ShouldBeTrue();
-            testSummary.OverallResult.ShouldBeTrue();
-
-            //Drop stored procedures
-            await storedProcedureHelper.DropStoredProceduresAsync();
+                CheckResult(testSummary, ResultEnum.AllPass).ShouldBeTrue();
+            }
+            finally
+            {
+                await Cleanup();
+            }
         }
 
         [Fact]
         [Trait("Integration", "Test Parameters")]
         public async Task TestTwoDuplicateStoredProceduresThatUseDateTimeParameter()
         {
-            StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
+            try
+            {
+                var storedProcedureHelper = CreateStoredProcedureHelper();
+                await storedProcedureHelper.CreateDuplicateStoredProceduresThatUseDateTimeParameterAsync();
 
-            await storedProcedureHelper.CreateDuplicateStoredProceduresThatUseDateTimeParameterAsync();
+                StoredProcedureTest storedProcedureTest = StoredProcedureTestFactory.DefaultTest()
+                    .AddDateTimeParameterToBoth("TestDateTime", DateTime.Now);
 
-            SqlTestRunner sqlTestRunner = new SqlTestRunner(new NullLogHelper());
-            StoredProcedureTest storedProcedureTest = StoredProcedureTestFactory.DefaultTest()
-                .AddDateTimeParameterToBoth("TestDateTime", DateTime.Now);
+                var testSummary = await RunStoredProcedureTester(storedProcedureTest);
 
-            TestSummary testSummary = await sqlTestRunner.Run(storedProcedureTest);
-
-            //Check test data is passed
-            testSummary.FirstTestResult.Result.ShouldBeTrue();
-            testSummary.SecondTestResult.Result.ShouldBeTrue();
-            testSummary.ThirdTestResult.Result.ShouldBeTrue();
-            testSummary.FourthTestResult.Result.ShouldBeTrue();
-            testSummary.OverallResult.ShouldBeTrue();
-
-            //Drop stored procedures
-            await storedProcedureHelper.DropStoredProceduresAsync();
+                CheckResult(testSummary, ResultEnum.AllPass).ShouldBeTrue();
+            }
+            finally
+            {
+                await Cleanup();
+            }
         }
 
         [Fact]
         [Trait("Integration", "Test Parameters")]
         public async Task TestTwoDuplicateStoredProceduresThatUseBoolParameter()
         {
-            StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
+            try
+            {
+                var storedProcedureHelper = CreateStoredProcedureHelper();
+                await storedProcedureHelper.CreateDuplicateStoredProceduresThatUseBoolParameterAsync();
 
-            await storedProcedureHelper.CreateDuplicateStoredProceduresThatUseBoolParameterAsync();
+                StoredProcedureTest storedProcedureTest = StoredProcedureTestFactory.DefaultTest()
+                    .AddBoolParameterToBoth("TestBool", true);
 
-            SqlTestRunner sqlTestRunner = new SqlTestRunner(new NullLogHelper());
-            StoredProcedureTest storedProcedureTest = StoredProcedureTestFactory.DefaultTest()
-                .AddBoolParameterToBoth("TestBool", true);
+                var testSummary = await RunStoredProcedureTester(storedProcedureTest);
 
-            TestSummary testSummary = await sqlTestRunner.Run(storedProcedureTest);
-
-            //Check test data is passed
-            testSummary.FirstTestResult.Result.ShouldBeTrue();
-            testSummary.SecondTestResult.Result.ShouldBeTrue();
-            testSummary.ThirdTestResult.Result.ShouldBeTrue();
-            testSummary.FourthTestResult.Result.ShouldBeTrue();
-            testSummary.OverallResult.ShouldBeTrue();
-
-            //Drop stored procedures
-            await storedProcedureHelper.DropStoredProceduresAsync();
+                CheckResult(testSummary, ResultEnum.AllPass).ShouldBeTrue();
+            }
+            finally
+            {
+                await Cleanup();
+            }
         }
 
         [Fact]
         [Trait("Integration", "Test Parameters")]
         public async Task TestTwoDuplicateStoredProceduresThatUseCustomParameter()
         {
-            StoredProcedureHelper storedProcedureHelper = new StoredProcedureHelper(new SqlQueryBuilder());
+            try
+            {
+                var storedProcedureHelper = CreateStoredProcedureHelper();
+                await storedProcedureHelper.CreateDuplicateStoredProceduresThatUseCustomParameterAsync();
 
-            await storedProcedureHelper.CreateDuplicateStoredProceduresThatUseCustomParameterAsync();
+                StoredProcedureTest storedProcedureTest = StoredProcedureTestFactory.DefaultTest()
+                    .AddCustomParameterToBoth("TestCustom", "Custom");
 
-            SqlTestRunner sqlTestRunner = new SqlTestRunner(new NullLogHelper());
-            StoredProcedureTest storedProcedureTest = StoredProcedureTestFactory.DefaultTest()
-                .AddCustomParameterToBoth("TestCustom", "Custom");
+                var testSummary = await RunStoredProcedureTester(storedProcedureTest);
 
-            TestSummary testSummary = await sqlTestRunner.Run(storedProcedureTest);
-
-            //Check test data is passed
-            testSummary.FirstTestResult.Result.ShouldBeTrue();
-            testSummary.SecondTestResult.Result.ShouldBeTrue();
-            testSummary.ThirdTestResult.Result.ShouldBeTrue();
-            testSummary.FourthTestResult.Result.ShouldBeTrue();
-            testSummary.OverallResult.ShouldBeTrue();
-
-            //Drop stored procedures
-            await storedProcedureHelper.DropStoredProceduresAsync();
-        }
-    }
-
-    public class NullLogHelper : ILogHelper
-    {
-        public void Log(string message)
-        {
-            return;
-        }
-
-        public BindingList<KeyValuePair<DateTime, string>> GetLogs()
-        {
-            return null;
+                CheckResult(testSummary, ResultEnum.AllPass).ShouldBeTrue();
+            }
+            finally
+            {
+                await Cleanup();
+            }
         }
     }
 }
