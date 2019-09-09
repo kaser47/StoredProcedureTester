@@ -56,6 +56,8 @@
       <DependentUpon>EasterEgg.cs</DependentUpon>
     </Compile>
     <Compile Include="ExtensionMethods\ExtensionMethods.cs" />
+    <Compile Include="Interfaces\IParameterManager.cs" />
+    <Compile Include="Models\ParameterManager.cs" />
     <Compile Include="StoredProcedureTester.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -676,7 +676,7 @@
             this.label9.Size = new System.Drawing.Size(0, 13);
             this.label9.TabIndex = 0;
             // 
-            // Form1
+            // StoredProcedureTester
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -685,7 +685,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "Form1";
+            this.Name = "StoredProcedureTester";
             this.Text = "Stored Procedure Tester";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);

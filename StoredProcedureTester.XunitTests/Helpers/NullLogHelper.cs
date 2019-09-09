@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using StoredProcedureTester.Interfaces;
 
-namespace StoredProcedureTester.Tests.IntegrationTests
+namespace StoredProcedureTester.Tests.Helpers
 {
     public class NullLogHelper : ILogHelper
     {

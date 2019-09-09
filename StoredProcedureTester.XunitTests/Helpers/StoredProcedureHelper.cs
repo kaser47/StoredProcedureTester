@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 using System.Threading.Tasks;
+using StoredProcedureTester.Tests.Builders;
 using StoredProcedureTester.Tests.Consts;
 
 namespace StoredProcedureTester.Tests.Helpers

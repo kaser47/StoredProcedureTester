@@ -60,9 +60,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Consts\StoredProcedureTesterTestsConsts.cs" />
-    <Compile Include="Enumns\ResultEnum.cs" />
+    <Compile Include="Enums\ResultEnum.cs" />
     <Compile Include="Factories\StoredProcedureTestFactory.cs" />
     <Compile Include="Builders\SqlQueryBuilder.cs" />
     <Compile Include="Helpers\StoredProcedureHelper.cs" />

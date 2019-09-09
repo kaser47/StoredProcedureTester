@@ -4,7 +4,6 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -20,10 +19,10 @@ namespace StoredProcedureTester
     public partial class StoredProcedureTester : Form
     {
         private StoredProcedureTest currentTest;
-        private StringBuilder stringBuilder;
         private KonamiSequence sequence = new KonamiSequence();
         private ILogHelper logHelper;
-        private ISqlTestRunner sqlTestRunner; 
+        private ISqlTestRunner sqlTestRunner;
+        private IParameterManager parameterManager;
 
         public StoredProcedureTester()
         {
@@ -31,6 +30,7 @@ namespace StoredProcedureTester
             SetupDefaults();
             SetupControls();
             sqlTestRunner = new SqlTestRunner(logHelper);
+            parameterManager = new ParameterManager(logHelper, currentTest);
         }
 
         private void SetupDefaults()
@@ -70,15 +70,6 @@ namespace StoredProcedureTester
             lException.Hide();
         }
 
-        private void Form1_KeyUp(object sender, KeyEventArgs e)
-        {
-            CheckEasterEgg(e);
-        }
-
-        private void CbTypeOnSelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateUIForValues();
-        }
         private void CheckEasterEgg(KeyEventArgs e)
         {
             if (sequence.IsCompletedBy(e.KeyCode))
@@ -90,7 +81,7 @@ namespace StoredProcedureTester
 
         private void UpdateUIForValues()
         {
-            TestParameterDataType dataType = (TestParameterDataType) cbType.SelectedItem;
+            TestParameterDataType dataType = (TestParameterDataType)cbType.SelectedItem;
 
             switch (dataType)
             {
@@ -121,24 +112,14 @@ namespace StoredProcedureTester
                     break;
             }
         }
-
-        private void LbOptimisedParametersOnMouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            RemoveOptimisedParameter();
-        }
-
-        private void LogsOnListChanged(object sender, ListChangedEventArgs e)
-        {
-            lblStatus.Text = $"Status: {logHelper.GetLogs().Last().Value}";
-        }
-
         private void RemoveOptimisedParameter()
         {
             if (lbOptimisedParameters.SelectedItem != null)
             {
-                TestParameter testParameter = (TestParameter) lbOptimisedParameters.SelectedItem;
-                currentTest.OptimisedStoredProcedureParameters.Remove(testParameter);
-                logHelper.Log($"Removed: {testParameter}");
+                TestParameter testParameter = (TestParameter)lbOptimisedParameters.SelectedItem;
+                parameterManager.RemoveParameter(testParameter, ParameterType.Optimised);
+                //currentTest.OptimisedStoredProcedureParameters.Remove(testParameter);
+                //logHelper.Log($"Removed: {testParameter}");
             }
         }
 
@@ -147,27 +128,10 @@ namespace StoredProcedureTester
             if (lbUnoptimisedParameters.SelectedItem != null)
             {
                 TestParameter testParameter = (TestParameter)lbUnoptimisedParameters.SelectedItem;
-                currentTest.UnoptimisedStoredProcedureParameters.Remove(testParameter);
-                logHelper.Log($"Removed: {testParameter}");
+                parameterManager.RemoveParameter(testParameter, ParameterType.Unoptimised);
+                //currentTest.UnoptimisedStoredProcedureParameters.Remove(testParameter);
+                //logHelper.Log($"Removed: {testParameter}");
             }
-        }
-
-        private void LbUnoptimisedParametersOnMouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            RemoveUnoptimisedParameter();
-        }
-
-        private void SetupControls()
-        {
-            lbStatus.DataSource = logHelper.GetLogs();
-            cbType.DataSource = Enum.GetValues(typeof(TestParameterDataType));
-            lbUnoptimisedParameters.DataSource = currentTest.UnoptimisedStoredProcedureParameters;
-            lbOptimisedParameters.DataSource = currentTest.OptimisedStoredProcedureParameters;
-        }
-
-        private async void BtnGenerate_Click(object sender, EventArgs e)
-        {
-            await RunTest();
         }
 
         private async Task RunTest()
@@ -263,9 +227,12 @@ namespace StoredProcedureTester
             return true;
         }
 
-        private void BtnAddToUnoptimised_Click(object sender, EventArgs e)
+        private void SetupControls()
         {
-            AddParameter(ParameterType.Unoptimised);
+            lbStatus.DataSource = logHelper.GetLogs();
+            cbType.DataSource = Enum.GetValues(typeof(TestParameterDataType));
+            lbUnoptimisedParameters.DataSource = currentTest.UnoptimisedStoredProcedureParameters;
+            lbOptimisedParameters.DataSource = currentTest.OptimisedStoredProcedureParameters;
         }
 
         private void AddParameter(ParameterType parameterType)
@@ -275,36 +242,55 @@ namespace StoredProcedureTester
                 return;
             }
 
-            TestParameter testParameter;
-            TestParameterDataType dataType = (TestParameterDataType) cbType.SelectedItem;
+            TestParameterDataType dataType = (TestParameterDataType)cbType.SelectedItem;
 
             if (dataType == TestParameterDataType.DateTime)
             {
-                testParameter = new TestParameter(tbName.Text, dtpValue.Value.ToString("MM /dd/yy hh:mm"), (TestParameterDataType)cbType.SelectedValue);
+                parameterManager.AddParameter(tbName.Text, dtpValue.Value.ToString("MM /dd/yy hh:mm"), parameterType, dataType);
+            }
+            else if (dataType == TestParameterDataType.Bool)
+            {
+                parameterManager.AddParameter(tbName.Text, chkBoxValue.Text, parameterType, dataType);
             }
             else
             {
-                testParameter = new TestParameter(tbName.Text, tbValue.Text, (TestParameterDataType)cbType.SelectedValue);
+                parameterManager.AddParameter(tbName.Text, tbValue.Text, parameterType, dataType);
             }
 
-            switch (parameterType)
-            {
-                case ParameterType.Unoptimised:
-                    currentTest.UnoptimisedStoredProcedureParameters.Add(testParameter);
-                    logHelper.Log($"Added: {testParameter} to unoptimised");
-                    break;
-                case ParameterType.Optimised:
-                    currentTest.OptimisedStoredProcedureParameters.Add(testParameter);
-                    logHelper.Log($"Added: {testParameter} to optimised");
-                    break;
-                case ParameterType.Optimised | ParameterType.Unoptimised:
-                    currentTest.UnoptimisedStoredProcedureParameters.Add(testParameter);
-                    currentTest.OptimisedStoredProcedureParameters.Add(testParameter);
-                    logHelper.Log($"Added: {testParameter} to both");
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(parameterType), parameterType, null);
-            }
+            //TestParameter testParameter;
+            //TestParameterDataType dataType = (TestParameterDataType)cbType.SelectedItem;
+
+            //if (dataType == TestParameterDataType.DateTime)
+            //{
+            //    testParameter = new TestParameter(tbName.Text, dtpValue.Value.ToString("MM /dd/yy hh:mm"), (TestParameterDataType)cbType.SelectedValue);
+            //}
+            //else if (dataType == TestParameterDataType.Bool)
+            //{
+            //    testParameter = new TestParameter(tbName.Text, chkBoxValue.Text, (TestParameterDataType)cbType.SelectedValue);
+            //}
+            //else
+            //{
+            //    testParameter = new TestParameter(tbName.Text, tbValue.Text, (TestParameterDataType)cbType.SelectedValue);
+            //}
+
+            //switch (parameterType)
+            //{
+            //    case ParameterType.Unoptimised:
+            //        currentTest.UnoptimisedStoredProcedureParameters.Add(testParameter);
+            //        logHelper.Log($"Added: {testParameter} to unoptimised");
+            //        break;
+            //    case ParameterType.Optimised:
+            //        currentTest.OptimisedStoredProcedureParameters.Add(testParameter);
+            //        logHelper.Log($"Added: {testParameter} to optimised");
+            //        break;
+            //    case ParameterType.Optimised | ParameterType.Unoptimised:
+            //        currentTest.UnoptimisedStoredProcedureParameters.Add(testParameter);
+            //        currentTest.OptimisedStoredProcedureParameters.Add(testParameter);
+            //        logHelper.Log($"Added: {testParameter} to both");
+            //        break;
+            //    default:
+            //        throw new ArgumentOutOfRangeException(nameof(parameterType), parameterType, null);
+            //}
         }
 
         private bool isParameterValid()
@@ -347,22 +333,59 @@ namespace StoredProcedureTester
         {
             logHelper.Log($"{fieldName} is required");
 
-            await  Task.Run(() =>
+            await Task.Run(() =>
             {
-                 btnGenerate.BackColor = Color.LightCoral;
-                 Thread.Sleep(1000);
-                 btnGenerate.BackColor = DefaultBackColor;
+                btnGenerate.BackColor = Color.LightCoral;
+                Thread.Sleep(1000);
+                btnGenerate.BackColor = DefaultBackColor;
             });
+        }
+
+        #region Controls
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            CheckEasterEgg(e);
+        }
+
+        private void CbTypeOnSelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateUIForValues();
+        }
+
+        private void LbOptimisedParametersOnMouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            RemoveOptimisedParameter();
+        }
+
+        private void LogsOnListChanged(object sender, ListChangedEventArgs e)
+        {
+            lblStatus.Text = $"Status: {logHelper.GetLogs().Last().Value}";
+        }
+
+        private void LbUnoptimisedParametersOnMouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            RemoveUnoptimisedParameter();
+        }
+
+        private async void BtnGenerate_Click(object sender, EventArgs e)
+        {
+            await RunTest();
+        }
+
+        private void BtnAddToUnoptimised_Click(object sender, EventArgs e)
+        {
+            AddParameter(ParameterType.Unoptimised);
         }
 
         private void BtnAddToOptimised_Click(object sender, EventArgs e)
         {
+            //Todo: ASHR006 Create Parameter Manager
             AddParameter(ParameterType.Optimised);
         }
 
         private void BtnAddToBoth_Click(object sender, EventArgs e)
         {
-            AddParameter((ParameterType)3);
+            AddParameter(ParameterType.Optimised | ParameterType.Unoptimised);
         }
 
         private void BtnGenerateGuid_Click(object sender, EventArgs e)
@@ -379,6 +402,8 @@ namespace StoredProcedureTester
         {
             Clipboard.SetText(tbOutput.Text);
         }
+
+        #endregion
     }
 }
 

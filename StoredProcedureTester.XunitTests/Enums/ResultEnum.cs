@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace StoredProcedureTester.Tests.Enumns
+namespace StoredProcedureTester.Tests.Enums
 {
     [Flags]
     enum ResultEnum
