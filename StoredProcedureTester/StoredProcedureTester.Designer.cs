@@ -85,6 +85,7 @@
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label9 = new System.Windows.Forms.Label();
+            this.tabAdvancedSqlGeneration = new System.Windows.Forms.TabPage();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage5.SuspendLayout();
@@ -278,6 +279,7 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
+            this.tabControl1.Controls.Add(this.tabAdvancedSqlGeneration);
             this.tabControl1.Location = new System.Drawing.Point(12, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -676,6 +678,16 @@
             this.label9.Size = new System.Drawing.Size(0, 13);
             this.label9.TabIndex = 0;
             // 
+            // tabAdvancedSqlGeneration
+            // 
+            this.tabAdvancedSqlGeneration.Location = new System.Drawing.Point(4, 22);
+            this.tabAdvancedSqlGeneration.Name = "tabAdvancedSqlGeneration";
+            this.tabAdvancedSqlGeneration.Padding = new System.Windows.Forms.Padding(3);
+            this.tabAdvancedSqlGeneration.Size = new System.Drawing.Size(700, 327);
+            this.tabAdvancedSqlGeneration.TabIndex = 5;
+            this.tabAdvancedSqlGeneration.Text = "Advanced SQL Generation";
+            this.tabAdvancedSqlGeneration.UseVisualStyleBackColor = true;
+            // 
             // StoredProcedureTester
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -760,6 +772,7 @@
         private System.Windows.Forms.Label lException;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox tbDBName;
+        private System.Windows.Forms.TabPage tabAdvancedSqlGeneration;
     }
 }
 

@@ -5,6 +5,6 @@ namespace StoredProcedureTester.Interfaces
 {
     public interface ISqlTestRunner
     {
-        Task<TestSummary> Run(StoredProcedureTest currentTest);
+        Task<TestSummary> Run(StoredProcedureTest currentTest, bool isRetry);
     }
 }

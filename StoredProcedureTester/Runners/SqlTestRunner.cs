@@ -10,8 +10,6 @@ namespace StoredProcedureTester.Runners
         private readonly ISqlBuilder _sqlBuilder;
         private readonly ILogHelper _logHelper;
 
-        public string GeneratedSql { get; }
-
         public SqlTestRunner(ILogHelper logHelper)
         {
             _logHelper = logHelper;
@@ -21,6 +19,16 @@ namespace StoredProcedureTester.Runners
 
         public async Task<TestSummary> Run(StoredProcedureTest currentTest)
         {
+            return await Run(currentTest, false);
+        }
+
+
+        public async Task<TestSummary> Run(StoredProcedureTest currentTest, bool isRetry)
+        {
+            if (!isRetry)
+            {
+                _sqlBuilder.ResetSql();
+            }
             _sqlBuilder.BuildSqlQueryText(currentTest);
             TestSummary testSummary = await _sqlRunner.RunSqlAsync(currentTest);
             return testSummary;

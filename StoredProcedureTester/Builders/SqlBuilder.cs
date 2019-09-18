@@ -31,6 +31,12 @@ namespace StoredProcedureTester
             }
         }
 
+        public void ResetSql()
+        {
+            hasBeenBuilt = false;
+            stringBuilder = StoredProcedureTesterConsts.GetTemplate();
+        }
+
         private void FillVariables(StoredProcedureTest test)
         {
             stringBuilder.Replace("{UnoptimisedStoredProcedureName}", $"{test.DatabaseName}.{test.UnoptimisedStoredProcedureName}");

@@ -134,7 +134,7 @@ namespace StoredProcedureTester
             }
         }
 
-        private async Task RunTest()
+        private async Task RunTest(bool isRetry)
         {
             if (!isTestValid())
             {
@@ -148,7 +148,7 @@ namespace StoredProcedureTester
 
             try
             {
-                TestSummary testSummary = await sqlTestRunner.Run(currentTest);
+                TestSummary testSummary = await sqlTestRunner.Run(currentTest, isRetry);
                 tbOutput.Text = testSummary.Test.GeneratedSql;
                 WriteResultsToUI(testSummary);
             }
@@ -369,7 +369,7 @@ namespace StoredProcedureTester
 
         private async void BtnGenerate_Click(object sender, EventArgs e)
         {
-            await RunTest();
+            await RunTest(false);
         }
 
         private void BtnAddToUnoptimised_Click(object sender, EventArgs e)
@@ -395,7 +395,7 @@ namespace StoredProcedureTester
 
         private async void BtnRunAgain_Click(object sender, EventArgs e)
         {
-            await RunTest();
+            await RunTest(true);
         }
 
         private void BtnCopyToClipboard_Click(object sender, EventArgs e)
