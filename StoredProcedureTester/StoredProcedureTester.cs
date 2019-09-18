@@ -43,7 +43,6 @@ namespace StoredProcedureTester
             lbOptimisedParameters.MouseDoubleClick += LbOptimisedParametersOnMouseDoubleClick;
             cbType.SelectedIndexChanged += CbTypeOnSelectedIndexChanged;
             this.KeyPreview = true;
-            this.KeyUp += Form1_KeyUp;
             dtpValue.Hide();
             chkBoxValue.Hide();
             btnGenerateGuid.Hide();
@@ -69,16 +68,6 @@ namespace StoredProcedureTester
             lNoResults.Hide();
             lException.Hide();
         }
-
-        private void CheckEasterEgg(KeyEventArgs e)
-        {
-            if (sequence.IsCompletedBy(e.KeyCode))
-            {
-                EasterEgg easterEgg = new EasterEgg();
-                easterEgg.Show();
-            }
-        }
-
         private void UpdateUIForValues()
         {
             TestParameterDataType dataType = (TestParameterDataType)cbType.SelectedItem;
@@ -342,10 +331,6 @@ namespace StoredProcedureTester
         }
 
         #region Controls
-        private void Form1_KeyUp(object sender, KeyEventArgs e)
-        {
-            CheckEasterEgg(e);
-        }
 
         private void CbTypeOnSelectedIndexChanged(object sender, EventArgs e)
         {
